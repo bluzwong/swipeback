@@ -146,38 +146,43 @@ public class SwipeBackActivityHelper {
 
     private boolean isEdgeMode = false;
 
-    public void setEdgeMode(boolean edgeMode) {
+    public SwipeBackActivityHelper setEdgeMode(boolean edgeMode) {
         isEdgeMode = edgeMode;
         if (swipeBackView != null) {
             swipeBackView.isEdgeMode = isEdgeMode;
         }
+        return this;
     }
 
     private boolean isParallax = false;
 
-    public void setParallaxMode(boolean isParallax) {
+    public SwipeBackActivityHelper setParallaxMode(boolean isParallax) {
         this.isParallax = isParallax;
+        return this;
     }
 
     private int parallaxRatio = 2;
-    public void setParallaxRatio(int ratio) {
+    public SwipeBackActivityHelper setParallaxRatio(int ratio) {
         parallaxRatio = Math.max(1, Math.min(ratio, Integer.MAX_VALUE));
+        return this;
     }
 
     private boolean needBackgroundShadow = false;
-    public void setNeedBackgroundShadow(boolean ifNeed) {
+    public SwipeBackActivityHelper setNeedBackgroundShadow(boolean ifNeed) {
         needBackgroundShadow = ifNeed;
         if (leftView != null) {
             leftView.imgViewHover.setVisibility(ifNeed? View.VISIBLE:View.GONE);
         }
+        return this;
     }
 
     private ViewGroup getDecorView() {
         return (ViewGroup) activity.getWindow().getDecorView();
     }
 
-    public void setDebuggable(boolean needDebug) {
+    public SwipeBackActivityHelper setDebuggable(boolean needDebug) {
         debug = needDebug;
+        return this;
     }
 
     public static void startSwipeActivity(Activity activity, Class cls) {

@@ -19,19 +19,20 @@ public class MainActivity extends AppCompatActivity {
     int num = 0;
     /// 0. get helper instance
     SwipeBackActivityHelper helper = new SwipeBackActivityHelper();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         num = getIntent().getIntExtra("num", 0);
         initViews();
-        helper.setDebuggable(true);
-        helper.setEdgeMode(true);
-        helper.setParallaxMode(true);
-        helper.setParallaxRatio(3);
-        helper.setNeedBackgroundShadow(true);
         /// 1. init with activity
-        helper.init(this);
+        helper.setDebuggable(true)
+                .setEdgeMode(true)
+                .setParallaxMode(true)
+                .setParallaxRatio(3)
+                .setNeedBackgroundShadow(true)
+                .init(this);
     }
 
     private void initViews() {
