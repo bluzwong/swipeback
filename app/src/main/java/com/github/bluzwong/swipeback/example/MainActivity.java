@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, MainActivity.class);
                 intent.putExtra("num", num + 1);
                 /// 2. use static method to start the activity that needs swipe back feature
-                SwipeBackActivityHelper.startSwipeActivity(MainActivity.this, intent);
+                SwipeBackActivityHelper.startSwipeActivity(MainActivity.this, intent, true, true);
             }
         });
 

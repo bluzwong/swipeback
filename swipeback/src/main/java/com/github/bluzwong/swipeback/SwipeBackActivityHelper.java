@@ -36,6 +36,7 @@ public class SwipeBackActivityHelper {
     private static boolean debug = false;
 
     private ScreenShotAndShadowView leftView;
+
     public void init(final Activity activity) {
         this.activity = activity;
         final int screenShotHashCode = activity.getIntent().getIntExtra(KEY_HASH, 0);
@@ -162,16 +163,18 @@ public class SwipeBackActivityHelper {
     }
 
     private int parallaxRatio = 2;
+
     public SwipeBackActivityHelper setParallaxRatio(int ratio) {
         parallaxRatio = Math.max(1, Math.min(ratio, Integer.MAX_VALUE));
         return this;
     }
 
     private boolean needBackgroundShadow = false;
+
     public SwipeBackActivityHelper setNeedBackgroundShadow(boolean ifNeed) {
         needBackgroundShadow = ifNeed;
         if (leftView != null) {
-            leftView.imgViewHover.setVisibility(ifNeed? View.VISIBLE:View.GONE);
+            leftView.imgViewHover.setVisibility(ifNeed ? View.VISIBLE : View.GONE);
         }
         return this;
     }
@@ -190,10 +193,28 @@ public class SwipeBackActivityHelper {
     }
 
     public static void startSwipeActivity(Activity activity, Intent intent) {
+        startSwipeActivity(activity, intent, false, false);
+    }
+
+    public static void startSwipeActivity(Activity activity, Class cls, boolean needParallax, boolean needBackgroundShadow) {
+        startSwipeActivity(activity, new Intent(activity, cls), needParallax, needBackgroundShadow);
+    }
+    private static int getAnim( boolean needParallax, boolean needBackgroundShadow) {
+        if (needParallax && needBackgroundShadow) return R.anim.slide_out_center_to_left_shadow_30;
+        if (needParallax) return R.anim.slide_out_center_to_left_30;
+        if (needBackgroundShadow) return R.anim.keep_shadow;
+        return R.anim.keep;
+    }
+
+    public static void startSwipeActivity(Activity activity, Intent intent, boolean needParallax, boolean needBackgroundShadow) {
+       startSwipeActivity(activity, intent, getAnim(needParallax, needBackgroundShadow));
+    }
+
+    public static void startSwipeActivity(Activity activity, Intent intent, int animResId) {
         saveScreenShot(activity);
         intent.putExtra(KEY_HASH, activity.hashCode());
         activity.startActivity(intent);
-        activity.overridePendingTransition(R.anim.slide_in_right, R.anim.keep);
+        activity.overridePendingTransition(R.anim.slide_in_right, animResId);
         logD("start swipe activity for hashcode " + activity.hashCode());
     }
 
