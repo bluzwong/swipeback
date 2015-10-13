@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         num = getIntent().getIntExtra("num", 0);
         initViews();
         helper.setDebuggable(true);
+        helper.setEdgeMode(true);
         /// 1. init with activity
         helper.init(this);
     }

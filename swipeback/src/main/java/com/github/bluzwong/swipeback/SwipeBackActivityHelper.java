@@ -47,6 +47,7 @@ public class SwipeBackActivityHelper {
             logW("cannot got prev activity screen shot success, please use helper.startActivity() instead");
         }
         swipeBackView = new SwipeBackView(activity);
+        setEdgeMode(isEdgeMode);
         try {
             Field field_overHandSize = SlidingPaneLayout.class.getDeclaredField("mOverhangSize");
             field_overHandSize.setAccessible(true);
@@ -132,6 +133,15 @@ public class SwipeBackActivityHelper {
     public void enableSwipeBack() {
         logD("enableSwipeBack");
         swipeBackView.disallowIntercept = false;
+    }
+
+    private boolean isEdgeMode = false;
+
+    public void setEdgeMode(boolean edgeMode) {
+        isEdgeMode = edgeMode;
+        if (swipeBackView != null) {
+            swipeBackView.isEdgeMode = isEdgeMode;
+        }
     }
 
     private ViewGroup getDecorView() {
