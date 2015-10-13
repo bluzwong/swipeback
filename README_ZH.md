@@ -1,21 +1,18 @@
 Swipe Back
 ============
-A library to add swipe back feature for activity.
+高仿知乎、微信的Activity滑动返回库。
 
- * Do not need inherit BaseActivity
- * Do not need theme
- * Support Parallax, Shadow background, Edge to back
+ * Activity不需要继承基Activity，最大程度减少侵入
+ * Activity不需要使用theme
+ * 支持视觉差效果，背景阴影效果，触摸边界、全屏返回
 
-[中文用户请点此处][0]
-
-Usage
+用法
 --------
-__0. Use helper method to start the activity you want swipe back.
-This method have some overloads to make parallax, shadow background or edge to back__
+__0. 使用helper的方法来启动需要支持滑动返回的activity，该方法包含多个重载可供设置效果__
 ```java
 SwipeBackActivityHelper.startSwipeActivity(this, intent, true, true);
 ```
-__1. Setup the activity you want swipe back.__
+__1. 在需要支持滑动返回的activity中，设置helper，可根据需要设定需要的效果__
 ```java
 SwipeBackActivityHelper helper = new SwipeBackActivityHelper();
 @Override
@@ -30,15 +27,15 @@ protected void onCreate(Bundle savedInstanceState) {
     // ...
 }
 ```
-__2. More better, override onBackPressed() to show swipe back animation__
+__2. 为了更好的效果，重写返回键按下的效果，显示一个滑动返回的动画__
 ```java
 @Override
 public void onBackPressed() {
     helper.finish();
 }
 ```
-__3. That's all.But if this activity contains another swipe view, it may cause conflict.
-Example. Handle ViewPager with swipe back :__
+__3. 基本搞定。但是在一些情况下，如果activity还包含了其他可能造成滑动冲突的组件，比如ViewPager，还需要对触摸事件另行处理。
+触摸的处理很复杂，但是不用害怕，已经提供了方法来解决冲突，以ViewPager为例:__
 ```java
 viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
     @Override
@@ -48,10 +45,10 @@ viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
     @Override
     public void onPageSelected(int position) {
         if (position != 0) {
-            /// if the current view page is not the first, make 'viewPager' receive touch event.
+            /// viewPager当前显示不是首页，那么由viewPager来处理触摸，屏蔽掉滑动返回
             helper.disableSwipeBack();
         } else {
-            /// the current page return to the first one, make 'swipe back' receive touch event.
+            /// viewPager当前显示的是首页，那么由swipe back来提供滑动返回的效果
             helper.enableSwipeBack();
         }
     }
@@ -61,11 +58,9 @@ viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
     }
 });
 ```
-Dependence
+依赖
 --------
 Gradle:
 ```groovy
 compile 'com.github.bluzwong:swipeback:0.1.1'
 ```
-
-[0]: README_ZH.md
