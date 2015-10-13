@@ -2,10 +2,13 @@ Swipe Back
 ============
 A library to add swipe back feature for activity.
 
+  ![1](./swipe.gif)
+
  * Do not need inherit BaseActivity
  * Do not need theme
  * Support Parallax, Shadow background, Edge to back
 
+[Download Demo][1]
 [中文用户请点此处][0]
 
 Usage
@@ -69,3 +72,4 @@ compile 'com.github.bluzwong:swipeback:0.1.1'
 ```
 
 [0]: README_ZH.md
+[1]: https://github.com/bluzwong/swipeback/releases/download/0.1.1/demo.apk

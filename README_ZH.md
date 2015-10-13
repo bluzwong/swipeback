@@ -2,10 +2,13 @@ Swipe Back
 ============
 高仿知乎、微信的Activity滑动返回库。
 
+  ![1](./swipe.gif)
+
  * Activity不需要继承基Activity，最大程度减少侵入
  * Activity不需要使用theme
  * 支持视觉差效果，背景阴影效果，触摸边界、全屏返回
 
+[下载 Demo][1]
 用法
 --------
 __0. 使用helper的方法来启动需要支持滑动返回的activity，该方法包含多个重载可供设置效果__
@@ -64,3 +67,5 @@ Gradle:
 ```groovy
 compile 'com.github.bluzwong:swipeback:0.1.1'
 ```
+
+[1]: https://github.com/bluzwong/swipeback/releases/download/0.1.1/demo.apk
