@@ -12,7 +12,7 @@ __0. 使用helper的方法来启动需要支持滑动返回的activity，该方�
 ```java
 SwipeBackActivityHelper.startSwipeActivity(this, intent, true, true);
 ```
-__1. 在需要支持滑动返回的activity中，设置helper，可根据需要设定需要的效果__
+__1. 在需要支持滑动返回的activity中，设置helper，可根据需要设置效果__
 ```java
 SwipeBackActivityHelper helper = new SwipeBackActivityHelper();
 @Override
@@ -27,7 +27,7 @@ protected void onCreate(Bundle savedInstanceState) {
     // ...
 }
 ```
-__2. 为了更好的效果，重写返回键按下的效果，显示一个滑动返回的动画__
+__2. 为了更好的效果，重写返回键按下，显示一个滑动返回的动画__
 ```java
 @Override
 public void onBackPressed() {
