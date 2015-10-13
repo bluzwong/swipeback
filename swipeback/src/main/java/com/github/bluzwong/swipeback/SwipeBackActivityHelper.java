@@ -35,7 +35,7 @@ public class SwipeBackActivityHelper {
     private String fileName = "";
     private static boolean debug = false;
 
-
+    private ScreenShotAndShadowView leftView;
     public void init(final Activity activity) {
         this.activity = activity;
         final int screenShotHashCode = activity.getIntent().getIntExtra(KEY_HASH, 0);
@@ -52,8 +52,9 @@ public class SwipeBackActivityHelper {
             Field field_overHandSize = SlidingPaneLayout.class.getDeclaredField("mOverhangSize");
             field_overHandSize.setAccessible(true);
             field_overHandSize.set(swipeBackView, 0);
-            final ScreenShotAndShadowView leftView = new ScreenShotAndShadowView(activity);
+            leftView = new ScreenShotAndShadowView(activity);
             leftView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            setNeedBackgroundShadow(needBackgroundShadow);
             swipeBackView.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
                 @Override
                 public void onPanelSlide(View view, float v) {
@@ -63,6 +64,11 @@ public class SwipeBackActivityHelper {
                     if (isParallax) {
                         leftView.imgView.setX(x / parallaxRatio);
                     }
+                    if (needBackgroundShadow) {
+                        float xPercent = (-x) / leftView.getWidth();
+                        leftView.imgViewHover.setAlpha(xPercent);
+                    }
+
                     if (!TextUtils.isEmpty(fileName) && leftView.getTag() == null) {
                         Bitmap bitmap = cachedScreenShot.get(fileName);
                         if (bitmap == null) {
@@ -156,6 +162,14 @@ public class SwipeBackActivityHelper {
     private int parallaxRatio = 2;
     public void setParallaxRatio(int ratio) {
         parallaxRatio = Math.max(1, Math.min(ratio, Integer.MAX_VALUE));
+    }
+
+    private boolean needBackgroundShadow = false;
+    public void setNeedBackgroundShadow(boolean ifNeed) {
+        needBackgroundShadow = ifNeed;
+        if (leftView != null) {
+            leftView.imgViewHover.setVisibility(ifNeed? View.VISIBLE:View.GONE);
+        }
     }
 
     private ViewGroup getDecorView() {
