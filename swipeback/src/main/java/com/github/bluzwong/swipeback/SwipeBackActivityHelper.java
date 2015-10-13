@@ -60,6 +60,9 @@ public class SwipeBackActivityHelper {
                     float x = view.getX() - leftView.getWidth();
                     logD(" set x = " + x);
                     leftView.shadowView.setX(x);
+                    if (isParallax) {
+                        leftView.imgView.setX(x / parallaxRatio);
+                    }
                     if (!TextUtils.isEmpty(fileName) && leftView.getTag() == null) {
                         Bitmap bitmap = cachedScreenShot.get(fileName);
                         if (bitmap == null) {
@@ -142,6 +145,17 @@ public class SwipeBackActivityHelper {
         if (swipeBackView != null) {
             swipeBackView.isEdgeMode = isEdgeMode;
         }
+    }
+
+    private boolean isParallax = false;
+
+    public void setParallaxMode(boolean isParallax) {
+        this.isParallax = isParallax;
+    }
+
+    private int parallaxRatio = 2;
+    public void setParallaxRatio(int ratio) {
+        parallaxRatio = Math.max(1, Math.min(ratio, Integer.MAX_VALUE));
     }
 
     private ViewGroup getDecorView() {

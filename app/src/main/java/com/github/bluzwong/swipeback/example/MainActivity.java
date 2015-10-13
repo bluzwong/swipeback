@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         helper.setDebuggable(true);
         helper.setEdgeMode(true);
+        helper.setParallaxMode(true);
+        helper.setParallaxRatio(3);
         /// 1. init with activity
         helper.init(this);
     }
