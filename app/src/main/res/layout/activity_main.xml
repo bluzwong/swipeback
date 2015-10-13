@@ -15,8 +15,39 @@
             android:id="@+id/vp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="80dp"
             />
 
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            >
+
+        <CheckBox
+                android:id="@+id/parallax"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="Parallax\n视觉差"
+                />
+        <CheckBox
+                android:id="@+id/shadow"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="Shadow\n阴影"
+                />
+
+        <CheckBox
+                android:id="@+id/edge"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="Edge\n边界响应"
+                />
+    </LinearLayout>
     <TextView
             android:id="@+id/tv"
             android:text="@string/hello_world"

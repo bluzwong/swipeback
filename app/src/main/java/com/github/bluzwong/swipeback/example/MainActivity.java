@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import com.github.bluzwong.swipeback.SwipeBackActivityHelper;
 
@@ -16,9 +18,13 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static boolean needParallax = false;
+    private static boolean needShadow = false;
+    private static boolean needEdge = false;
     int num = 0;
     /// 0. get helper instance
     SwipeBackActivityHelper helper = new SwipeBackActivityHelper();
+    CheckBox parallaxBox, shadowBox, edgeBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +34,15 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         /// 1. init with activity
         helper.setDebuggable(true)
-                .setEdgeMode(true)
-                .setParallaxMode(true)
+                .setEdgeMode(needEdge)
+                .setParallaxMode(needParallax)
                 .setParallaxRatio(3)
-                .setNeedBackgroundShadow(true)
+                .setNeedBackgroundShadow(needShadow)
                 .init(this);
     }
 
     private void initViews() {
+        initCheckbox();
         findViewById(R.id.background).setBackgroundColor(Color.parseColor(getRandColorCode()));
         ((TextView) findViewById(R.id.tv)).setText(String.valueOf(num));
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
@@ -44,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, MainActivity.class);
                 intent.putExtra("num", num + 1);
                 /// 2. use static method to start the activity that needs swipe back feature
-                SwipeBackActivityHelper.startSwipeActivity(MainActivity.this, intent, true, true);
+                SwipeBackActivityHelper.startSwipeActivity(MainActivity.this, intent, needParallax, needShadow);
             }
         });
 
@@ -84,6 +91,44 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         /// 3. use helper.finish() to make finish animation or finish it normally
         helper.finish();
+    }
+
+    private void initCheckbox() {
+        parallaxBox = (CheckBox) findViewById(R.id.parallax);
+        parallaxBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                needParallax = isChecked;
+                helper.setParallaxMode(isChecked);
+            }
+        });
+        shadowBox = (CheckBox) findViewById(R.id.shadow);
+        shadowBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                needShadow = isChecked;
+                helper.setNeedBackgroundShadow(isChecked);
+            }
+        });
+
+        edgeBox = (CheckBox) findViewById(R.id.edge);
+        edgeBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                needEdge = isChecked;
+                helper.setEdgeMode(isChecked);
+            }
+        });
+    }
+
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        parallaxBox.setChecked(needParallax);
+        shadowBox.setChecked(needShadow);
+        edgeBox.setChecked(needEdge);
     }
 
     // just for random background color
