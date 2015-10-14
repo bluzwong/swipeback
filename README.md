@@ -17,6 +17,9 @@ __0. Use helper method to start the activity you want swipe back.
 This method have some overloads to make parallax, shadow background or edge to back__
 ```java
 SwipeBackActivityHelper.startSwipeActivity(this, intent, true, true);
+// or use a builder
+SwipeBackActivityHelper.activityBuilder(MainActivity.this)
+                        .intent(intent).needParallax(true).needBackgroundShadow(true).startActivity();
 ```
 __1. Setup the activity you want swipe back.__
 ```java
@@ -68,7 +71,7 @@ Dependence
 --------
 Gradle:
 ```groovy
-compile 'com.github.bluzwong:swipeback:0.1.1'
+compile 'com.github.bluzwong:swipeback:0.1.3@aar'
 ```
 
 [0]: README_ZH.md

@@ -193,11 +193,62 @@ public class SwipeBackActivityHelper {
     }
 
     public static void startSwipeActivity(Activity activity, Intent intent) {
-        startSwipeActivity(activity, intent, false, false);
+        startSwipeActivity(activity, intent, false, false, false);
     }
 
-    public static void startSwipeActivity(Activity activity, Class cls, boolean needParallax, boolean needBackgroundShadow) {
-        startSwipeActivity(activity, new Intent(activity, cls), needParallax, needBackgroundShadow);
+    public static void startSwipeActivity(Activity activity, Class cls, boolean needParallax, boolean needBackgroundShadow, boolean fitSystemWindow) {
+        startSwipeActivity(activity, new Intent(activity, cls), needParallax, needBackgroundShadow, fitSystemWindow);
+    }
+
+    public static StartSwipeActivityBuilder activityBuilder(Activity activity) {
+        return new StartSwipeActivityBuilder(activity);
+    }
+
+    public static class StartSwipeActivityBuilder {
+        private Activity activity;
+        private boolean needParallax = false;
+        private boolean needBackgroundShadow = false;
+        private boolean fitSystemWindow = false;
+        private Intent intent;
+        private Class cls;
+
+        public StartSwipeActivityBuilder(Activity activity) {
+            this.activity = activity;
+        }
+
+        public StartSwipeActivityBuilder needParallax(boolean needParallax) {
+            this.needParallax = needParallax;
+            return this;
+        }
+        public StartSwipeActivityBuilder needBackgroundShadow(boolean needBackgroundShadow) {
+            this.needBackgroundShadow = needBackgroundShadow;
+            return this;
+        }
+        public StartSwipeActivityBuilder fitSystemWindow(boolean fitSystemWindow) {
+            this.fitSystemWindow = fitSystemWindow;
+            return this;
+        }
+        public StartSwipeActivityBuilder intent(Intent intent) {
+            this.intent = intent;
+            return this;
+        }
+
+        public StartSwipeActivityBuilder cls(Class cls) {
+            this.cls = cls;
+            return this;
+        }
+
+        public void startActivity() {
+            if (intent == null && cls == null) {
+                logW("intent or activityClass must be settled");
+                return;
+            }
+            if (intent != null) {
+                startSwipeActivity(activity, intent, needParallax, needBackgroundShadow, fitSystemWindow);
+            } else {
+                startSwipeActivity(activity, cls, needParallax, needBackgroundShadow, fitSystemWindow);
+            }
+        }
     }
     private static int getAnim( boolean needParallax, boolean needBackgroundShadow) {
         if (needParallax && needBackgroundShadow) return R.anim.slide_out_center_to_left_shadow_30;
@@ -206,12 +257,12 @@ public class SwipeBackActivityHelper {
         return R.anim.keep;
     }
 
-    public static void startSwipeActivity(Activity activity, Intent intent, boolean needParallax, boolean needBackgroundShadow) {
-       startSwipeActivity(activity, intent, getAnim(needParallax, needBackgroundShadow));
+    public static void startSwipeActivity(Activity activity, Intent intent, boolean needParallax, boolean needBackgroundShadow, boolean fitSystemWindow) {
+       startSwipeActivity(activity, intent, getAnim(needParallax, needBackgroundShadow), fitSystemWindow);
     }
 
-    public static void startSwipeActivity(Activity activity, Intent intent, int animResId) {
-        saveScreenShot(activity);
+    public static void startSwipeActivity(Activity activity, Intent intent, int animResId, boolean fitSystemWindow) {
+        saveScreenShot(activity, fitSystemWindow);
         intent.putExtra(KEY_HASH, activity.hashCode());
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in_right, animResId);
@@ -262,15 +313,16 @@ public class SwipeBackActivityHelper {
         }
     }
 
-    private static void saveScreenShot(final Activity activity) {
+    private static void saveScreenShot(final Activity activity, final boolean fitSystemWindow) {
         final View decorView = activity.getWindow().getDecorView();
         final View rootView = decorView.getRootView();
         rootView.setDrawingCacheEnabled(true);
         rootView.buildDrawingCache();
+        final Bitmap bitmap = rootView.getDrawingCache();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Bitmap bitmap = rootView.getDrawingCache();
+
                 if (bitmap == null) {
                     logW("get screen shot failed!");
                     rootView.setDrawingCacheEnabled(false);
@@ -285,16 +337,21 @@ public class SwipeBackActivityHelper {
                     int width = bitmap.getWidth();
                     int height = bitmap.getHeight();
                     int statusHeight = frame.top;
-                    if (statusHeight > 0) {
-                        logD("has status bar cut top for  " + statusHeight);
-                        bitmap = Bitmap.createBitmap(bitmap, 0, statusHeight, width, height - statusHeight);
+                    int navHeight = height - frame.bottom;
+                    Bitmap fixedBitmap;
+
+                    logD("has status bar cut top for  " + statusHeight);
+                    if (fitSystemWindow) {
+                        statusHeight = 0;
                     }
-                    cachedScreenShot.put(fileName, bitmap);
+                    fixedBitmap = Bitmap.createBitmap(bitmap, 0, statusHeight, width, height - statusHeight - navHeight);
+
+                    cachedScreenShot.put(fileName, fixedBitmap);
                     activityHashList.add(String.valueOf(hashCode));
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    fixedBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
                     rootView.setDrawingCacheEnabled(false);
                     logD("get and save screen shot ok" + fileName);
-
+                    rootView.destroyDrawingCache();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }

@@ -14,6 +14,9 @@ Swipe Back
 __0. 使用helper的方法来启动需要支持滑动返回的activity，该方法包含多个重载可供设置效果__
 ```java
 SwipeBackActivityHelper.startSwipeActivity(this, intent, true, true);
+// 或者使用builder方法
+SwipeBackActivityHelper.activityBuilder(MainActivity.this)
+                        .intent(intent).needParallax(true).needBackgroundShadow(true).startActivity();
 ```
 __1. 在需要支持滑动返回的activity中，设置helper，可根据需要设置效果__
 ```java
@@ -65,7 +68,7 @@ viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 --------
 Gradle:
 ```groovy
-compile 'com.github.bluzwong:swipeback:0.1.1'
+compile 'com.github.bluzwong:swipeback:0.1.3@aar'
 ```
 
 [1]: https://github.com/bluzwong/swipeback/releases/download/0.1.1/demo.apk

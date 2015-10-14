@@ -19,7 +19,8 @@ public class StartActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(StartActivity.this, MainActivity.class);
                 intent.putExtra("num", 0);
-                SwipeBackActivityHelper.startSwipeActivity(StartActivity.this, intent, false, false);
+                SwipeBackActivityHelper.activityBuilder(StartActivity.this)
+                        .intent(intent).needParallax(true).needBackgroundShadow(true).startActivity();
             }
         });
 
