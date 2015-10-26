@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -211,6 +212,7 @@ public class SwipeBackActivityHelper {
         private boolean fitSystemWindow = false;
         private Intent intent;
         private Class cls;
+        private List<View> fixViews = new ArrayList<>();
 
         public StartSwipeActivityBuilder(Activity activity) {
             this.activity = activity;
@@ -220,14 +222,17 @@ public class SwipeBackActivityHelper {
             this.needParallax = needParallax;
             return this;
         }
+
         public StartSwipeActivityBuilder needBackgroundShadow(boolean needBackgroundShadow) {
             this.needBackgroundShadow = needBackgroundShadow;
             return this;
         }
+
         public StartSwipeActivityBuilder fitSystemWindow(boolean fitSystemWindow) {
             this.fitSystemWindow = fitSystemWindow;
             return this;
         }
+
         public StartSwipeActivityBuilder intent(Intent intent) {
             this.intent = intent;
             return this;
@@ -238,10 +243,35 @@ public class SwipeBackActivityHelper {
             return this;
         }
 
+        public StartSwipeActivityBuilder prepareView(View view) {
+            if (view != null) {
+                this.fixViews.add(view);
+            }
+            return this;
+        }
+
+        public StartSwipeActivityBuilder prepareViews(View[] views) {
+            if (views != null) {
+                this.fixViews.addAll(Arrays.asList(views));
+            }
+            return this;
+        }
+
         public void startActivity() {
             if (intent == null && cls == null) {
                 logW("intent or activityClass must be settled");
                 return;
+            }
+            for (final View fixView : fixViews) {
+                fixView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        fixView.layout(0, 0, fixView.getWidth(), fixView.getHeight());
+                        if (fixView.isDrawingCacheEnabled()) {
+                            fixView.destroyDrawingCache();
+                        }
+                    }
+                }, 1);
             }
             if (intent != null) {
                 startSwipeActivity(activity, intent, needParallax, needBackgroundShadow, fitSystemWindow);
@@ -250,7 +280,8 @@ public class SwipeBackActivityHelper {
             }
         }
     }
-    private static int getAnim( boolean needParallax, boolean needBackgroundShadow) {
+
+    private static int getAnim(boolean needParallax, boolean needBackgroundShadow) {
         if (needParallax && needBackgroundShadow) {
             logD("needParallax && needBackgroundShadow");
             return R.anim.slide_out_center_to_left_shadow_30;
@@ -269,7 +300,7 @@ public class SwipeBackActivityHelper {
     }
 
     public static void startSwipeActivity(Activity activity, Intent intent, boolean needParallax, boolean needBackgroundShadow, boolean fitSystemWindow) {
-       startSwipeActivity(activity, intent, getAnim(needParallax, needBackgroundShadow), fitSystemWindow);
+        startSwipeActivity(activity, intent, getAnim(needParallax, needBackgroundShadow), fitSystemWindow);
     }
 
     public static void startSwipeActivity(Activity activity, Intent intent, int animResId, boolean fitSystemWindow) {
@@ -328,9 +359,7 @@ public class SwipeBackActivityHelper {
         final View decorView = activity.getWindow().getDecorView();
         final View rootView = decorView.getRootView();
         // zhege zhenshi yeluzi, bu zheyang recyclerview jiu hui cuo
-        rootView.setDrawingCacheEnabled(false);
         rootView.setDrawingCacheEnabled(true);
-        rootView.buildDrawingCache();
         final Bitmap bitmap = rootView.getDrawingCache();
         new Thread(new Runnable() {
             @Override
@@ -364,7 +393,6 @@ public class SwipeBackActivityHelper {
                     fixedBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
                     rootView.setDrawingCacheEnabled(false);
                     logD("get and save screen shot ok" + fileName);
-                    rootView.destroyDrawingCache();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }

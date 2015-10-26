@@ -36,7 +36,7 @@ ext {
     siteUrl = 'https://github.com/bluzwong/swipeback'
     gitUrl = 'https://github.com/bluzwong/swipeback.git'
 
-    libraryVersion = '0.1.4'
+    libraryVersion = '0.2.0'
 
     developerId = 'bluzwong'
     developerName = 'brucewangzhijie'
