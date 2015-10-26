@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.Environment;
 import android.support.v4.util.LruCache;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.text.TextUtils;
@@ -60,7 +61,6 @@ public class SwipeBackActivityHelper {
                 @Override
                 public void onPanelSlide(View view, float v) {
                     float x = view.getX() - leftView.getWidth();
-                    logD(" set x = " + x);
                     leftView.shadowView.setX(x);
                     if (isParallax) {
                         leftView.imgView.setX(x / parallaxRatio);
@@ -251,9 +251,20 @@ public class SwipeBackActivityHelper {
         }
     }
     private static int getAnim( boolean needParallax, boolean needBackgroundShadow) {
-        if (needParallax && needBackgroundShadow) return R.anim.slide_out_center_to_left_shadow_30;
-        if (needParallax) return R.anim.slide_out_center_to_left_30;
-        if (needBackgroundShadow) return R.anim.keep_shadow;
+        if (needParallax && needBackgroundShadow) {
+            logD("needParallax && needBackgroundShadow");
+            return R.anim.slide_out_center_to_left_shadow_30;
+        }
+        if (needParallax) {
+            logD("needParallax do not need needBackgroundShadow");
+            return R.anim.slide_out_center_to_left_30;
+        }
+        if (needBackgroundShadow) {
+            logD("do not needParallax and need needBackgroundShadow");
+            return R.anim.keep_shadow;
+        }
+
+        logD("do not need any animation");
         return R.anim.keep;
     }
 
@@ -316,6 +327,8 @@ public class SwipeBackActivityHelper {
     private static void saveScreenShot(final Activity activity, final boolean fitSystemWindow) {
         final View decorView = activity.getWindow().getDecorView();
         final View rootView = decorView.getRootView();
+        // zhege zhenshi yeluzi, bu zheyang recyclerview jiu hui cuo
+        rootView.setDrawingCacheEnabled(false);
         rootView.setDrawingCacheEnabled(true);
         rootView.buildDrawingCache();
         final Bitmap bitmap = rootView.getDrawingCache();
@@ -368,7 +381,12 @@ public class SwipeBackActivityHelper {
     }
 
     private static String getFileName(Context context, int hashCode) {
-        return getCacheDir(context) + "/swipeback@@" + hashCode + "$$.png";
+        File folder = new File(getCacheDir(context) + "/swipeback_cache");
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+        return folder.getAbsolutePath() + "/swipeback@@" + hashCode + "$$.png";
+        //return Environment.getExternalStorageDirectory() +"/swipebackcache" + "/swipeback@@" + hashCode + "$$.png";
     }
 
     private static void logD(String msg) {
