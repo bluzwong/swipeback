@@ -16,7 +16,13 @@ __0. 使用helper的方法来启动需要支持滑动返回的activity，该方�
 SwipeBackActivityHelper.startSwipeActivity(this, intent, true, true);
 // 或者使用builder方法
 SwipeBackActivityHelper.activityBuilder(MainActivity.this)
-                        .intent(intent).needParallax(true).needBackgroundShadow(true).startActivity();
+                        .intent(intent)
+                        .needParallax(true)
+                        .needBackgroundShadow(true)
+                     // .fitSystemWindow(true) // status bar height
+                     // .prepareView(swipeRefreshLayout)
+                     // see http://stackoverflow.com/questions/29356607/android-swiperefreshlayout-cause-recyclerview-not-update-when-take-screenshot
+                        .startActivity();
 ```
 __1. 在需要支持滑动返回的activity中，设置helper，可根据需要设置效果__
 ```java
@@ -52,10 +58,16 @@ viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
     public void onPageSelected(int position) {
         if (position != 0) {
             /// viewPager当前显示不是首页，那么由viewPager来处理触摸，屏蔽掉滑动返回
-            helper.disableSwipeBack();
+            // helper.disableSwipeBack();
+            
+            /// 或者在非最左页使用边缘触摸返回
+            helper.setEdgeMode(true);
         } else {
             /// viewPager当前显示的是首页，那么由swipe back来提供滑动返回的效果
-            helper.enableSwipeBack();
+            // helper.enableSwipeBack();
+            
+            /// 最左的页面则全屏触摸返回
+            helper.setEdgeMode(false);
         }
     }
 
@@ -68,7 +80,7 @@ viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 --------
 Gradle:
 ```groovy
-compile 'com.github.bluzwong:swipeback:0.1.3@aar'
+compile 'com.github.bluzwong:swipeback:0.2.0@aar'
 ```
 
 [1]: https://github.com/bluzwong/swipeback/releases/download/0.1.1/demo.apk

@@ -51,9 +51,14 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, MainActivity.class);
                 intent.putExtra("num", num + 1);
                 /// 2. use static method to start the activity that needs swipe back feature
-//                SwipeBackActivityHelper.startSwipeActivity(MainActivity.this, intent, needParallax, needShadow, false);
                 SwipeBackActivityHelper.activityBuilder(MainActivity.this)
-                        .intent(intent).needParallax(true).needBackgroundShadow(true).startActivity();
+                        .intent(intent)
+                        .needParallax(true)
+                        .needBackgroundShadow(true)
+                     // .fitSystemWindow(true) // status bar height
+                     // .prepareView(swipeRefreshLayout)
+                     // see http://stackoverflow.com/questions/29356607/android-swiperefreshlayout-cause-recyclerview-not-update-when-take-screenshot
+                        .startActivity();
             }
         });
 
@@ -75,10 +80,16 @@ public class MainActivity extends AppCompatActivity {
                 /// 4. when some views conflict with swipe back , you should do these, for example:
                 if (position != 0) {
                     /// if the current view page is not the first, make 'viewPager' receive touch event.
-                    helper.disableSwipeBack();
+                    // helper.disableSwipeBack();
+
+                    /// or enable edge mode
+                    helper.setEdgeMode(true);
                 } else {
                     /// the current page return to the first one, make 'swipe back' receive touch event.
                     helper.enableSwipeBack();
+
+                    /// or disable edge mode
+                    helper.setEdgeMode(false);
                 }
             }
 

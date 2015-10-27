@@ -17,9 +17,15 @@ __0. Use helper method to start the activity you want swipe back.
 This method have some overloads to make parallax, shadow background or edge to back__
 ```java
 SwipeBackActivityHelper.startSwipeActivity(this, intent, true, true);
-// or use a builder
+// or use a builder to change some configs
 SwipeBackActivityHelper.activityBuilder(MainActivity.this)
-                        .intent(intent).needParallax(true).needBackgroundShadow(true).startActivity();
+                        .intent(intent)
+                        .needParallax(true)
+                        .needBackgroundShadow(true)
+                     // .fitSystemWindow(true) // status bar height
+                     // .prepareView(swipeRefreshLayout)
+                     // see http://stackoverflow.com/questions/29356607/android-swiperefreshlayout-cause-recyclerview-not-update-when-take-screenshot
+                        .startActivity();
 ```
 __1. Setup the activity you want swipe back.__
 ```java
@@ -56,9 +62,15 @@ viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
         if (position != 0) {
             /// if the current view page is not the first, make 'viewPager' receive touch event.
             helper.disableSwipeBack();
+            
+            /// or enable edge mode
+            helper.setEdgeMode(true);
         } else {
             /// the current page return to the first one, make 'swipe back' receive touch event.
             helper.enableSwipeBack();
+            
+            /// or disable edge mode
+            helper.setEdgeMode(false);
         }
     }
 
@@ -71,7 +83,7 @@ Dependence
 --------
 Gradle:
 ```groovy
-compile 'com.github.bluzwong:swipeback:0.1.3@aar'
+compile 'com.github.bluzwong:swipeback:0.2.0@aar'
 ```
 
 [0]: README_ZH.md
