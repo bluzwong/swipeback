@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -38,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
                 .setParallaxMode(needParallax)
                 .setParallaxRatio(3)
                 .setNeedBackgroundShadow(needShadow)
+                .setPanelSlideListener(new SwipeBackActivityHelper.PanelSlideListener() {
+                    @Override
+                    public void onPanelSlide(View view, float v) {
+                        Log.i("swipeback-log", "panel slide : " + v);
+                    }
+                })
                 .init(this);
     }
 

@@ -39,6 +39,17 @@ public class SwipeBackActivityHelper {
 
     private ScreenShotAndShadowView leftView;
 
+    public interface PanelSlideListener {
+        void onPanelSlide(View view, float v);
+    }
+    private PanelSlideListener panelSlideListener;
+
+    public SwipeBackActivityHelper setPanelSlideListener(PanelSlideListener panelSlideListener) {
+        this.panelSlideListener = panelSlideListener;
+        return this;
+    }
+
+
     public void init(final Activity activity) {
         this.activity = activity;
         final int screenShotHashCode = activity.getIntent().getIntExtra(KEY_HASH, 0);
@@ -61,6 +72,9 @@ public class SwipeBackActivityHelper {
             swipeBackView.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
                 @Override
                 public void onPanelSlide(View view, float v) {
+                    if (panelSlideListener != null) {
+                        panelSlideListener.onPanelSlide(view, v);
+                    }
                     float x = view.getX() - leftView.getWidth();
                     leftView.shadowView.setX(x);
                     if (isParallax) {
