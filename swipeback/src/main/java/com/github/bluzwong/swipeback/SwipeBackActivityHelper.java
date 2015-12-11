@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.Environment;
 import android.support.v4.util.LruCache;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.text.TextUtils;
@@ -293,6 +292,31 @@ public class SwipeBackActivityHelper {
                 startSwipeActivity(activity, cls, needParallax, needBackgroundShadow, fitSystemWindow);
             }
         }
+
+        // support for other startActivity
+        public Intent prepareStartActivity() {
+            if (intent == null && cls == null) {
+                logW("intent or activityClass must be settled");
+                return null;
+            }
+            saveScreenShot(activity, fitSystemWindow);
+            if (intent == null) {
+                intent = new Intent(activity, cls);
+            }
+            intent.putExtra(KEY_HASH, activity.hashCode());
+            return intent;
+        }
+
+        // support for other startActivity
+        public void startActivityBy(IStartActivity iStartActivity) {
+            iStartActivity.startYourActivityHere(prepareStartActivity());
+            activity.overridePendingTransition(R.anim.slide_in_right, getAnim(needParallax, needBackgroundShadow));
+        }
+    }
+
+    // support for other startActivity
+    public interface IStartActivity {
+        void startYourActivityHere(Intent intent);
     }
 
     private static int getAnim(boolean needParallax, boolean needBackgroundShadow) {

@@ -66,6 +66,15 @@ public class MainActivity extends AppCompatActivity {
                      // .prepareView(swipeRefreshLayout)
                      // see http://stackoverflow.com/questions/29356607/android-swiperefreshlayout-cause-recyclerview-not-update-when-take-screenshot
                         .startActivity();
+
+                /* or use this method to startActivityForResult
+                .startActivityBy(new SwipeBackActivityHelper.IStartActivity() {
+                    @Override
+                    public void startYourActivityHere(Intent intent) {
+                        startActivityForResult(intent, 0);
+                    }
+                });
+                */
             }
         });
 
@@ -149,6 +158,12 @@ public class MainActivity extends AppCompatActivity {
         parallaxBox.setChecked(needParallax);
         shadowBox.setChecked(needShadow);
         edgeBox.setChecked(needEdge);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.i("swipeback", "onActivityResult => " + requestCode);
     }
 
     // just for random background color
