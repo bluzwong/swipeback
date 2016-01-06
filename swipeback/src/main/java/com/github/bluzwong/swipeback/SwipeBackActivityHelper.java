@@ -3,6 +3,8 @@ package com.github.bluzwong.swipeback;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.*;
+import android.os.Environment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -11,6 +13,7 @@ import android.support.v4.util.LruCache;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -100,7 +103,21 @@ public class SwipeBackActivityHelper {
                             logD("load " + fileName + " from cache");
                         }
                         if (bitmap != null) {
-                            leftView.imgView.setImageBitmap(bitmap);
+                            int imageWidth = bitmap.getWidth();
+                            int imageHeight = bitmap.getHeight();
+                            boolean isTall = imageHeight >= imageWidth;
+                            Display display = activity.getWindowManager().getDefaultDisplay();
+                            int windowWidth = display.getWidth();
+                            int windowHeight = display.getHeight();
+                            boolean windowIsTall = windowHeight >= windowWidth;
+                            /* if (isTall != windowIsTall) {
+                                Matrix matrix = new Matrix();
+                                matrix.postRotate(90);
+                                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                            }*/
+                            if (isTall == windowIsTall) {
+                                leftView.imgView.setImageBitmap(bitmap);
+                            }
                             leftView.setTag(1);
                         }
                     }
