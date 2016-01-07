@@ -17,6 +17,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.io.File;
@@ -110,14 +111,15 @@ public class SwipeBackActivityHelper {
                             int windowWidth = display.getWidth();
                             int windowHeight = display.getHeight();
                             boolean windowIsTall = windowHeight >= windowWidth;
-                            /* if (isTall != windowIsTall) {
+                             if (isTall != windowIsTall) {
                                 Matrix matrix = new Matrix();
                                 matrix.postRotate(90);
-                                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                            }*/
-                            if (isTall == windowIsTall) {
-                                leftView.imgView.setImageBitmap(bitmap);
+                                bitmap = Bitmap.createBitmap(bitmap, 0, 0, imageWidth, imageHeight, matrix, true);
                             }
+                            //if (isTall == windowIsTall) {
+                                leftView.imgView.setImageBitmap(bitmap);
+                            leftView.imgView.setScaleType(ImageView.ScaleType.FIT_START);
+                            //}
                             leftView.setTag(1);
                         }
                     }
