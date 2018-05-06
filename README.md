@@ -83,7 +83,7 @@ Dependence
 --------
 Gradle:
 ```groovy
-compile 'com.github.bluzwong:swipeback:0.2.0@aar'
+implementation 'com.github.bluzwong:swipeback:0.2.2@aar'
 ```
 
 [0]: README_ZH.md
